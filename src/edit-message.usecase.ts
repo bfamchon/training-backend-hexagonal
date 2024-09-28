@@ -1,5 +1,5 @@
+import { MessageText } from './message';
 import { MessageRepository } from './message.repository';
-import { EmptyMessageError, MessageTooLongError } from './post-message.usecase';
 
 export type EditMessageCommand = {
   messageId: string;
@@ -9,18 +9,13 @@ export type EditMessageCommand = {
 export class EditMessageUseCase {
   constructor(private readonly messageRepository: MessageRepository) {}
   async handle(editMessageCommand: EditMessageCommand) {
-    if (editMessageCommand.text.length > 280) {
-      throw new MessageTooLongError();
-    }
-    if (editMessageCommand.text.trim().length === 0) {
-      throw new EmptyMessageError();
-    }
+    const messageText = MessageText.of(editMessageCommand.text);
 
     const message = await this.messageRepository.getMessageById(editMessageCommand.messageId);
 
     await this.messageRepository.save({
       ...message,
-      text: editMessageCommand.text
+      text: messageText
     });
   }
 }

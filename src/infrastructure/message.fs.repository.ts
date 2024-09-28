@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Message } from './message';
-import { MessageRepository } from './message.repository';
+import { MessageRepository } from '../application/message.repository';
+import { Message } from '../domain/message';
 
 export class FileSystemMessageRepository implements MessageRepository {
   async getMessageById(messageId: string): Promise<Message> {

@@ -1,6 +1,6 @@
-import { DateProvider } from './date.provider';
-import { Message } from './message';
-import { MessageRepository } from './message.repository';
+import { Message } from '../../domain/message';
+import { DateProvider } from '../date.provider';
+import { MessageRepository } from '../message.repository';
 
 export type PostMessageCommand = {
   id: string;

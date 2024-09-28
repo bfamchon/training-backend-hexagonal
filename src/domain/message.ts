@@ -1,10 +1,3 @@
-// export type Message = {
-//   id: string;
-//   author: string;
-//   text: MessageText;
-//   publishedAt: Date;
-// };
-
 export class Message {
   constructor(
     private readonly _id: string,

@@ -1,5 +1,4 @@
-import { DateProvider } from "./date.provider";
-
+import { DateProvider } from './../application/date.provider';
 
 export class StubDateProvider implements DateProvider {
   now: Date;

@@ -1,5 +1,5 @@
-import { DateProvider } from './date.provider';
-import { MessageRepository } from './message.repository';
+import { DateProvider } from '../date.provider';
+import { MessageRepository } from '../message.repository';
 
 export class ViewTimelineUseCase {
   constructor(

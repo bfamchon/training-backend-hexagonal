@@ -1,5 +1,5 @@
 import { DateProvider } from './date.provider';
-import { MessageText } from './message';
+import { Message } from './message';
 import { MessageRepository } from './message.repository';
 
 export type PostMessageCommand = {
@@ -15,12 +15,13 @@ export class PostMessageUseCase {
   ) {}
 
   async handle(postMessageCommand: PostMessageCommand) {
-    const messageText = MessageText.of(postMessageCommand.text);
-    await this.messageRepository.save({
-      id: postMessageCommand.id,
-      text: messageText,
-      author: postMessageCommand.author,
-      publishedAt: this.dateProvider.getNow()
-    });
+    await this.messageRepository.save(
+      Message.fromData({
+        id: postMessageCommand.id,
+        text: postMessageCommand.text,
+        author: postMessageCommand.author,
+        publishedAt: this.dateProvider.getNow()
+      })
+    );
   }
 }

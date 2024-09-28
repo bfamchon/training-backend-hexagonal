@@ -1,8 +1,9 @@
+import { createFollowingFixture, FollowingFixture } from './following.fixture';
 describe('Feature: Following a user', () => {
-  let fixture: Fixture;
+  let fixture: FollowingFixture;
 
   beforeEach(() => {
-    fixture = createFixture();
+    fixture = createFollowingFixture();
   });
   test('Alice can follow Bob', async () => {
     fixture.givenUserFollowed({
@@ -21,13 +22,3 @@ describe('Feature: Following a user', () => {
     });
   });
 });
-
-const createFixture = () => {
-  return {
-    givenUserFollowed({ user, followed }: { user: string; followed: string[] }) {},
-    whenUserFollows({ user, userToFollow }: { user: string; userToFollow: string }) {},
-    thenUserFollowedAre({ user, followed }: { user: string; followed: string[] }) {}
-  };
-};
-
-type Fixture = ReturnType<typeof createFixture>;

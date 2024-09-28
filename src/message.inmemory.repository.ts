@@ -1,5 +1,5 @@
-import { Message } from "./message";
-import { MessageRepository } from "./message.repository";
+import { Message } from './message';
+import { MessageRepository } from './message.repository';
 
 export class InMemoryMessageRepository implements MessageRepository {
   messages = new Map<string, Message>();
@@ -9,8 +9,8 @@ export class InMemoryMessageRepository implements MessageRepository {
     return Promise.resolve();
   }
 
-  getMessageById(messageId: string) {
-    return this.messages.get(messageId);
+  async getMessageById(messageId: string): Promise<Message> {
+    return Promise.resolve(this.messages.get(messageId)!);
   }
 
   givenExistingMessages(messages: Message[]) {
@@ -18,9 +18,7 @@ export class InMemoryMessageRepository implements MessageRepository {
   }
 
   getAllOfUser(user: string): Promise<Message[]> {
-    return Promise.resolve(
-      [...this.messages.values()].filter((msg) => msg.author === user)
-    );
+    return Promise.resolve([...this.messages.values()].filter((msg) => msg.author === user));
   }
 
   private _save(msg: Message) {

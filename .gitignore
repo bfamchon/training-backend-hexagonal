@@ -2,3 +2,4 @@ dist
 node_modules
 .env
 messages.test.json
+followed.test.json

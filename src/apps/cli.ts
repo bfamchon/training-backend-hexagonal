@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 
+import { PrismaClient } from '@prisma/client';
 import { Command } from 'commander';
-import { EditMessageCommand, EditMessageUseCase } from './src/application/usecases/edit-message.usecase';
-import { FollowUserCommand, FollowUserUseCase } from './src/application/usecases/follow-user.usecase';
-import { PostMessageCommand, PostMessageUseCase } from './src/application/usecases/post-message.usecase';
-import { ViewTimelineUseCase } from './src/application/usecases/view-timeline.usecase';
-import { ViewUserWallUseCase } from './src/application/usecases/view-wall.usecase';
-import { FileSystemFollowedRepository } from './src/infrastructure/followed.fs.repository';
-import { FileSystemMessageRepository } from './src/infrastructure/message.fs.repository';
-import { RealDateProvider } from './src/infrastructure/real-date-provider';
+import { EditMessageCommand, EditMessageUseCase } from '../application/usecases/edit-message.usecase';
+import { FollowUserCommand, FollowUserUseCase } from '../application/usecases/follow-user.usecase';
+import { PostMessageCommand, PostMessageUseCase } from '../application/usecases/post-message.usecase';
+import { ViewTimelineUseCase } from '../application/usecases/view-timeline.usecase';
+import { ViewUserWallUseCase } from '../application/usecases/view-wall.usecase';
+import { PrismaFollowedRepository } from '../infrastructure/followed.prisma.repository';
+import { PrismaMessageRepository } from '../infrastructure/message.prisma.repository';
+import { RealDateProvider } from '../infrastructure/real-date-provider';
 
-const messageRepository = new FileSystemMessageRepository();
+const prismaClient = new PrismaClient();
+const messageRepository = new PrismaMessageRepository(prismaClient);
 const dateProvider = new RealDateProvider();
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
 const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
-const followedRepository = new FileSystemFollowedRepository();
+const followedRepository = new PrismaFollowedRepository(prismaClient);
 const followUserUseCase = new FollowUserUseCase(followedRepository);
 const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository, dateProvider);
 
@@ -107,7 +109,9 @@ program
   );
 
 async function main() {
+  await prismaClient.$connect();
   await program.parseAsync();
+  await prismaClient.$disconnect();
 }
 
 main();

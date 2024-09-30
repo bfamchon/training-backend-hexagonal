@@ -10,16 +10,20 @@ import { ViewUserWallUseCase } from '../application/usecases/view-wall.usecase';
 import { PrismaFollowedRepository } from '../infrastructure/followed.prisma.repository';
 import { PrismaMessageRepository } from '../infrastructure/message.prisma.repository';
 import { RealDateProvider } from '../infrastructure/real-date-provider';
+import { CliTimelinePresenter } from './timeline.cli.presenter';
+import { DefaultTimelinePresenter } from './timeline.default.presenter';
 
 const prismaClient = new PrismaClient();
 const messageRepository = new PrismaMessageRepository(prismaClient);
 const dateProvider = new RealDateProvider();
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
-const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
+const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository);
 const followedRepository = new PrismaFollowedRepository(prismaClient);
 const followUserUseCase = new FollowUserUseCase(followedRepository);
-const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository, dateProvider);
+const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository);
+const defaultTimelinePresenter = new DefaultTimelinePresenter(dateProvider);
+const timelinePresenter = new CliTimelinePresenter(defaultTimelinePresenter);
 
 const program = new Command();
 program
@@ -67,8 +71,8 @@ program
   .addCommand(
     new Command('wall').argument('<user>', 'the user to view the wall of').action(async (user) => {
       try {
-        const wall = await viewUserWallUseCase.handle({ user });
-        console.table(wall);
+        await viewUserWallUseCase.handle({ user }, timelinePresenter);
+
         process.exit(0);
       } catch (err) {
         console.error('❌', err);
@@ -98,8 +102,7 @@ program
   .addCommand(
     new Command('view').argument('<user>', 'the user to view the timeline of').action(async (user) => {
       try {
-        const timeline = await viewTimelineUseCase.handle({ user });
-        console.table(timeline);
+        await viewTimelineUseCase.handle({ user }, timelinePresenter);
         process.exit(0);
       } catch (error) {
         console.error('❌', error);

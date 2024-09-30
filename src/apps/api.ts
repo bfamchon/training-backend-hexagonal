@@ -9,16 +9,17 @@ import { ViewUserWallUseCase } from '../application/usecases/view-wall.usecase';
 import { PrismaFollowedRepository } from '../infrastructure/followed.prisma.repository';
 import { PrismaMessageRepository } from '../infrastructure/message.prisma.repository';
 import { RealDateProvider } from '../infrastructure/real-date-provider';
+import { ApiTimelinePresenter } from './timeline.api.presenter';
 
 const prismaClient = new PrismaClient();
 const messageRepository = new PrismaMessageRepository(prismaClient);
 const dateProvider = new RealDateProvider();
 const postMessageUseCase = new PostMessageUseCase(messageRepository, dateProvider);
 const editMessageUseCase = new EditMessageUseCase(messageRepository);
-const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository, dateProvider);
+const viewTimelineUseCase = new ViewTimelineUseCase(messageRepository);
 const followedRepository = new PrismaFollowedRepository(prismaClient);
 const followUserUseCase = new FollowUserUseCase(followedRepository);
-const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository, dateProvider);
+const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository);
 
 const fastify = Fastify({ logger: true });
 
@@ -72,8 +73,8 @@ const routes = async (fastifyInstance: FastifyInstance) => {
     Reply: { author: string; text: string; publicationTime: string }[] | httpErrors.httpErrors<500>;
   }>('/view', {}, async (request, reply) => {
     try {
-      const timeline = await viewTimelineUseCase.handle({ user: request.query.user });
-      reply.status(200).send(timeline);
+      const timelinePresenter = new ApiTimelinePresenter(reply);
+      return await viewTimelineUseCase.handle({ user: request.query.user }, timelinePresenter);
     } catch (err) {
       reply.send(httpErrors[500](err));
     }
@@ -84,8 +85,8 @@ const routes = async (fastifyInstance: FastifyInstance) => {
     Reply: { author: string; text: string; publicationTime: string }[] | httpErrors.httpErrors<500>;
   }>('/wall', {}, async (request, reply) => {
     try {
-      const wall = await viewUserWallUseCase.handle({ user: request.query.user });
-      reply.status(200).send(wall);
+      const wallPresenter = new ApiTimelinePresenter(reply);
+      return viewUserWallUseCase.handle({ user: request.query.user }, wallPresenter);
     } catch (err) {
       reply.send(httpErrors[500](err));
     }

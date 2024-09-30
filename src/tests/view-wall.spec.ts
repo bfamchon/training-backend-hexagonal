@@ -1,5 +1,7 @@
 import { MessageRepository } from '../application/message.repository';
+import { TimelinePresenter } from '../application/timeline.presenter';
 import { ViewUserWallUseCase } from '../application/usecases/view-wall.usecase';
+import { DefaultTimelinePresenter } from '../apps/timeline.default.presenter';
 import { StubDateProvider } from '../infrastructure/stub-date-provider';
 import { FollowedRepository } from './../application/followed.repository';
 import { createFollowingFixture, FollowingFixture } from './following.fixture';
@@ -80,7 +82,13 @@ const createFixture = ({
   }[];
 
   const dateProvider = new StubDateProvider();
-  const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository, dateProvider);
+  const defaultWallPresenter = new DefaultTimelinePresenter(dateProvider);
+  const viewUserWallUseCase = new ViewUserWallUseCase(messageRepository, followedRepository);
+  const wallPresenter: TimelinePresenter = {
+    show(_timeline) {
+      wall = defaultWallPresenter.show(_timeline);
+    }
+  };
   return {
     givenNowIs(date: Date) {
       dateProvider.now = date;
@@ -95,7 +103,7 @@ const createFixture = ({
       expect(wall).toEqual(expectedWall);
     },
     async whenUserLookForTheWallOf(user: string) {
-      wall = await viewUserWallUseCase.handle({ user });
+      await viewUserWallUseCase.handle({ user }, wallPresenter);
     }
   };
 };

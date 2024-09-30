@@ -34,10 +34,9 @@ export const createMessagingFixture = () => {
       await viewTimelineUseCase.handle({ user }, timelinePresenter);
     },
     async whenUserEditsMessage(editMessageCommand: EditMessageCommand) {
-      try {
-        await editMessageUseCase.handle(editMessageCommand);
-      } catch (err) {
-        thrownError = err;
+      const result = await editMessageUseCase.handle(editMessageCommand);
+      if (result.isErr()) {
+        thrownError = result.error;
       }
     },
     thenUserShouldSee(
@@ -53,10 +52,9 @@ export const createMessagingFixture = () => {
       dateProvider.now = now;
     },
     async whenUserPostsAmessage(postMessageCommand: PostMessageCommand) {
-      try {
-        await postMessageUseCase.handle(postMessageCommand);
-      } catch (err) {
-        thrownError = err;
+      const result = await postMessageUseCase.handle(postMessageCommand);
+      if (result.isErr()) {
+        thrownError = result.error;
       }
     },
     async thenMessageShouldBe(expectedMessage: Message) {

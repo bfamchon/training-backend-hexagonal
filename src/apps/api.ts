@@ -31,8 +31,12 @@ const routes = async (fastifyInstance: FastifyInstance) => {
       text: request.body.message
     };
     try {
-      await postMessageUseCase.handle(postMessageCommand);
-      reply.status(201);
+      const result = await postMessageUseCase.handle(postMessageCommand);
+      if (result.isOk()) {
+        reply.status(201);
+        return;
+      }
+      reply.send(httpErrors[400](result.error));
     } catch (err) {
       reply.send(httpErrors[500](err));
     }
@@ -44,8 +48,12 @@ const routes = async (fastifyInstance: FastifyInstance) => {
       text: request.body.text
     };
     try {
-      await editMessageUseCase.handle(editMessageCommand);
-      reply.status(200);
+      const result = await editMessageUseCase.handle(editMessageCommand);
+      if (result.isOk()) {
+        reply.status(201);
+        return;
+      }
+      reply.send(httpErrors[400](result.error));
     } catch (err) {
       reply.send(httpErrors[500](err));
     }

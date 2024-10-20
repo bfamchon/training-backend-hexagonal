@@ -4,7 +4,7 @@ import { PrismaMessageRepository } from '@crafty/crafty/infrastructure/message.p
 import { PrismaService } from '@crafty/crafty/infrastructure/prisma.service';
 import { RealDateProvider } from '@crafty/crafty/infrastructure/real-date-provider';
 import { Module } from '@nestjs/common';
-import { ApiController } from 'apps/api/src/api.controller';
+import { ApiController } from './api.controller';
 
 @Module({
   imports: [

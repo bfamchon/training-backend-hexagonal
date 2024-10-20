@@ -21,8 +21,8 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { ApiTimelinePresenter } from 'apps/api/src/timeline.api.presenter';
 import { FastifyReply } from 'fastify';
+import { ApiTimelinePresenter } from './timeline.api.presenter';
 
 @Controller()
 export class ApiController {

@@ -2,7 +2,6 @@ import { DateProvider } from '@crafty/crafty/application/date.provider';
 import { TimelinePresenter } from '@crafty/crafty/application/timeline.presenter';
 import { Timeline } from '@crafty/crafty/domain/timeline';
 import { Injectable } from '@nestjs/common';
-
 @Injectable()
 export class DefaultTimelinePresenter implements TimelinePresenter {
   constructor(private readonly dateProvider: DateProvider) {}

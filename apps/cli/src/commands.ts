@@ -12,11 +12,11 @@ import {
 } from '@crafty/crafty/application/usecases/post-message.usecase';
 import { ViewTimelineUseCase } from '@crafty/crafty/application/usecases/view-timeline.usecase';
 import { ViewUserWallUseCase } from '@crafty/crafty/application/usecases/view-wall.usecase';
-import { CliTimelinePresenter } from 'apps/cli/src/timeline.cli.presenter';
 import { Command, CommandRunner } from 'nest-commander';
+import { CliTimelinePresenter } from './timeline.cli.presenter';
 
 @Command({ name: 'post', arguments: '<user> <message>' })
-class PostCommand extends CommandRunner {
+export class PostCommand extends CommandRunner {
   constructor(private readonly postMessageUseCase: PostMessageUseCase) {
     super();
   }
@@ -44,7 +44,7 @@ class PostCommand extends CommandRunner {
 }
 
 @Command({ name: 'wall', arguments: '<user>' })
-class WallCommand extends CommandRunner {
+export class WallCommand extends CommandRunner {
   constructor(
     private readonly viewUserWallUseCase: ViewUserWallUseCase,
     private readonly cliPresenter: CliTimelinePresenter,
@@ -66,7 +66,7 @@ class WallCommand extends CommandRunner {
   }
 }
 @Command({ name: 'view', arguments: '<user>' })
-class ViewCommand extends CommandRunner {
+export class ViewCommand extends CommandRunner {
   constructor(
     private readonly viewTimelineUseCase: ViewTimelineUseCase,
     private readonly cliPresenter: CliTimelinePresenter,
@@ -89,7 +89,7 @@ class ViewCommand extends CommandRunner {
 }
 
 @Command({ name: 'edit', arguments: '<message_id> <message>' })
-class EditCommand extends CommandRunner {
+export class EditCommand extends CommandRunner {
   constructor(private readonly editMessageUseCase: EditMessageUseCase) {
     super();
   }
@@ -116,7 +116,7 @@ class EditCommand extends CommandRunner {
 }
 
 @Command({ name: 'post', arguments: '<user> <user_to_follow>' })
-class FollowCommand extends CommandRunner {
+export class FollowCommand extends CommandRunner {
   constructor(private readonly followUserUseCase: FollowUserUseCase) {
     super();
   }
@@ -137,11 +137,3 @@ class FollowCommand extends CommandRunner {
     }
   }
 }
-
-export const commands = {
-  PostCommand,
-  EditCommand,
-  FollowCommand,
-  ViewCommand,
-  WallCommand,
-};

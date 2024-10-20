@@ -8,7 +8,7 @@ import { ViewTimelineUseCase } from '@crafty/crafty/application/usecases/view-ti
 import { ViewUserWallUseCase } from '@crafty/crafty/application/usecases/view-wall.usecase';
 import { ClassProvider, DynamicModule, Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { DefaultTimelinePresenter } from 'apps/cli/src/timeline.default.presenter';
+import { DefaultTimelinePresenter } from './apps/timeline.default.presenter';
 
 @Module({})
 export class CraftyModule {
@@ -51,6 +51,7 @@ export class CraftyModule {
         ViewTimelineUseCase,
         ViewUserWallUseCase,
         DefaultTimelinePresenter,
+        DateProvider,
       ],
     };
   }
